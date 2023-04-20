@@ -1,0 +1,72 @@
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        type: "event",
+      },
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        type: 1,
+        imei: 1,
+        data: 1,
+        createdAt: 1,
+      },
+  },
+  {
+    $addFields:
+      /**
+       * newField: The new field name.
+       * expression: The new field expression.
+       */
+      {
+        altitude: "$data.altitude",
+        longitude: "$data.longitude",
+        data_engine: "$data.type",
+        tag: "$data.tag",
+      },
+  },
+  {
+    $match:
+      /**
+   * 
+   *   "data.type": { 
+      $not: {
+      $in: ["rssi", "connection"] }
+      
+    },
+   */
+      {
+        data_engine: "engine",
+        tag: {
+          $regex: /^t_/,
+        },
+      },
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        imei: "867717034058660",
+      },
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        createdAt: 1,
+      },
+  },
+]
